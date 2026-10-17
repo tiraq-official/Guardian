@@ -21,7 +21,7 @@ Works on **Magisk, KernelSU / KernelSU-Next, APatch, FolkPatch, SukiSU**.
 
 ## Install
 
-1. Download `Guardian-v1.0.0.zip`.
+1. Download `Guardian-v1.0.zip`.
 2. Root manager → Modules → Install from storage → pick the zip.
 3. Reboot, then open the module's WebUI and set your toggles.
 
