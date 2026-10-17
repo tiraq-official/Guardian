@@ -1,0 +1,25 @@
+{
+  "generated": "2026-10-17T17:18:26Z",
+  "categories": {
+    "ads": {
+      "count": 277960,
+      "sources": [
+        "hagezi-pro.plus",
+        "stevenblack",
+        "adguard-sdns"
+      ]
+    },
+    "gambling": {
+      "count": 133655,
+      "sources": [
+        "hagezi-gambling"
+      ]
+    },
+    "porn": {
+      "count": 92362,
+      "sources": [
+        "hagezi-nsfw"
+      ]
+    }
+  }
+}

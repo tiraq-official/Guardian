@@ -1,0 +1,7 @@
+{
+  "title": "Guardian",
+  "icon": "icon.png",
+  "windowResize": true,
+  "backHandler": true,
+  "exitConfirm": false
+}

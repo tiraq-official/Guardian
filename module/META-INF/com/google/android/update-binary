@@ -1,0 +1,67 @@
+#!/sbin/sh
+# ============================================================================
+#  Guardian - zip entry point.
+#  Magisk (and Magisk-compatible managers) run this.  If a manager instead
+#  drives customize.sh itself, this file is simply ignored.
+# ============================================================================
+umask 022
+OUTFD=$2
+ZIPFILE=$3
+
+ui_print() { echo "$1"; }
+
+# ---- Preferred path: Magisk / KernelSU-Next / APatch Magisk-style installer ----
+for uf in /data/adb/magisk/util_functions.sh /data/adb/ksu/util_functions.sh /data/adb/ap/util_functions.sh; do
+    if [ -f "$uf" ]; then
+        . "$uf"
+        if type install_module >/dev/null 2>&1; then
+            install_module
+            exit 0
+        fi
+    fi
+done
+
+# ---- Fallback: self-contained extractor ----
+ui_print "- Guardian: using built-in installer"
+TMPDIR=${TMPDIR:-/dev/tmp}
+WORK="$TMPDIR/guardian.$$"
+rm -rf "$WORK"
+MODPATH="$WORK"
+mkdir -p "$MODPATH"
+
+UNZIP=""
+for u in /data/adb/magisk/busybox /data/adb/ksu/bin/busybox /data/adb/ap/bin/busybox /system/bin/busybox unzip; do
+    if [ -x "$u" ] || command -v "$u" >/dev/null 2>&1; then UNZIP="$u"; break; fi
+done
+[ -z "$UNZIP" ] && { ui_print "! no unzip tool found"; exit 1; }
+
+case "$UNZIP" in
+    *busybox) "$UNZIP" unzip -o "$ZIPFILE" -d "$MODPATH" >/dev/null 2>&1 ;;
+    *)        "$UNZIP" -o "$ZIPFILE" -d "$MODPATH" >/dev/null 2>&1 ;;
+esac
+
+cd "$MODPATH" || exit 1
+
+MODID=$(sed -n 's/^id=//p' module.prop | head -n1)
+[ -z "$MODID" ] && { ui_print "! module.prop has no id"; exit 1; }
+
+set_perm() {
+    chown "$2:$3" "$1" 2>/dev/null
+    chmod "$4" "$1" 2>/dev/null
+}
+set_perm_recursive() {
+    chown -R "$2:$3" "$1" 2>/dev/null
+    find "$1" -type d -exec chmod "$4" {} + 2>/dev/null
+    find "$1" -type f -exec chmod "$5" {} + 2>/dev/null
+}
+
+[ -f customize.sh ] && . ./customize.sh
+
+DST=/data/adb/modules/$MODID
+rm -rf "$DST"
+mkdir -p "$DST"
+cp -a "$MODPATH"/. "$DST"/ 2>/dev/null || cp -Rf "$MODPATH"/. "$DST"/
+rm -rf "$WORK"
+
+ui_print "- Installed to $DST"
+exit 0

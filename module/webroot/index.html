@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Guardian</title>
+<link rel="stylesheet" href="https://mui.kernelsu.org/internal/insets.css">
+<link rel="stylesheet" href="https://mui.kernelsu.org/internal/colors.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="progress" id="progress" aria-hidden="true"><span class="bar"></span></div>
+
+<main class="scaffold" id="scaffold">
+
+  <header class="hero reveal">
+    <div class="hero-logo" id="heroLogo">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2 4 5.2v5.4c0 4.8 3.4 9.2 8 10.4 4.6-1.2 8-5.6 8-10.4V5.2L12 2z"/>
+        <path class="tick" d="M8.6 11.7l2.3 2.3 4.5-4.7" fill="none"/>
+      </svg>
+    </div>
+    <div class="hero-text">
+      <h1>Guardian</h1>
+      <p>Ad&nbsp;·&nbsp;Gambling&nbsp;·&nbsp;Adult blocker</p>
+    </div>
+  </header>
+
+  <div class="stats reveal">
+    <span class="dot" id="stateDot"></span>
+    <span id="stateText">Checking…</span>
+    <span class="sep">·</span>
+    <span><b id="blockedCount">0</b> domains</span>
+  </div>
+
+  <div class="warn" id="warnBox">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3L12 3z"/><path d="M12 10.5v3.4M12 16.7v.01" fill="none"/></svg>
+    <span id="warnText"></span>
+  </div>
+
+  <!-- master -->
+  <section class="card master reveal" id="masterCard">
+    <div class="card-lead">
+      <div class="lead-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5.2v5.4c0 4.8 3.4 9.2 8 10.4 4.6-1.2 8-5.6 8-10.4V5.2L12 2z"/></svg>
+      </div>
+      <div class="lead-text">
+        <h2>Master switch</h2>
+        <p>Turn all blocking on or off in one tap.</p>
+      </div>
+    </div>
+    <button class="mdswitch" id="sw-master" role="switch" aria-checked="true" aria-label="Master switch">
+      <span class="track"><span class="thumb">
+        <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
+        <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
+      </span></span>
+    </button>
+  </section>
+
+  <h3 class="section-title reveal">What to block</h3>
+
+  <section class="categories" id="categories">
+
+    <section class="card cat reveal" data-key="ads">
+      <div class="card-lead">
+        <div class="lead-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M3 19h18" fill="none"/><path d="M7 9h6M7 12h4" fill="none"/></svg>
+        </div>
+        <div class="lead-text">
+          <h2>Ads &amp; trackers</h2>
+          <p>Blocks advertising, tracking and known malware domains in every app.</p>
+        </div>
+      </div>
+      <button class="mdswitch" id="sw-ads" role="switch" aria-checked="true" aria-label="Block ads">
+        <span class="track"><span class="thumb">
+          <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
+          <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
+        </span></span>
+      </button>
+    </section>
+
+    <section class="card cat reveal" data-key="gambling">
+      <div class="card-lead">
+        <div class="lead-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" fill="none"/><circle cx="9.5" cy="10.5" r="1.1"/><circle cx="14.5" cy="13.5" r="1.1"/><circle cx="12" cy="12" r="1.1"/></svg>
+        </div>
+        <div class="lead-text">
+          <h2>Gambling</h2>
+          <p>Blocks betting, casino, lottery and gaming-bonus sites system-wide.</p>
+        </div>
+      </div>
+      <button class="mdswitch" id="sw-gambling" role="switch" aria-checked="true" aria-label="Block gambling">
+        <span class="track"><span class="thumb">
+          <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
+          <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
+        </span></span>
+      </button>
+    </section>
+
+    <section class="card cat reveal" data-key="porn">
+      <div class="card-lead">
+        <div class="lead-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none"/><path d="M6 18L18 6" fill="none"/></svg>
+        </div>
+        <div class="lead-text">
+          <h2>Adult / NSFW</h2>
+          <p>Blocks adult content across the whole system, in apps and browsers.</p>
+        </div>
+      </div>
+      <button class="mdswitch" id="sw-porn" role="switch" aria-checked="true" aria-label="Block adult content">
+        <span class="track"><span class="thumb">
+          <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
+          <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
+        </span></span>
+      </button>
+    </section>
+
+  </section>
+
+  <section class="tools reveal">
+    <button class="textbtn" id="btnUpdate">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6" fill="none"/><path d="M20 4v4h-4" fill="none"/></svg>
+      Update blocklists
+    </button>
+    <span class="tools-info" id="updatedInfo"></span>
+  </section>
+
+  <footer class="foot reveal">
+    <span>Maintained by</span>
+    <b>Saptak</b>
+  </footer>
+
+</main>
+
+<div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

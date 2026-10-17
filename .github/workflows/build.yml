@@ -1,0 +1,50 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install build deps
+        run: pip install pillow
+
+      - name: Regenerate icon
+        run: python3 tools/make_icon.py
+
+      # Optional: pull the newest lists on every build. Comment out to ship
+      # the lists committed in the repo instead.
+      # - name: Refresh blocklists
+      #   run: python3 tools/fetch_lists.py
+
+      - name: Build module zip
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Guardian-module
+          path: dist/*.zip
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip

@@ -1,0 +1,13 @@
+# Guardian - SELinux policy additions.
+#
+# The hosts file is bind-mounted from /data/adb/guardian/hosts.  Files under
+# /data/adb are labelled adb_data_file, which the DNS resolver (netd) is not
+# allowed to read, so blocking would silently do nothing.
+#
+# Guardian already relabels the file to system_file (see scripts/common.sh),
+# which is the normal fix.  These rules are a safety net for devices/roots
+# where relabelling is not permitted.
+
+# let netd reach and read the bind-mounted hosts file
+allow netd adb_data_file:dir { search getattr }
+allow netd adb_data_file:file { open read getattr map }
