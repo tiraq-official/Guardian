@@ -1,6 +1,6 @@
 id=saptak_guardian
 name=Guardian — Ad · Gambling · Adult Blocker
-version=v1.0.0
+version=v1.0
 versionCode=10000
 author=Saptak Maji
 description=System-wide DNS blocker for ads, gambling and adult sites, with a Material 3 Expressive WebUI.

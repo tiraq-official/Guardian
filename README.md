@@ -4,9 +4,7 @@
 Material 3 Expressive WebUI.
 
 <p align="center">
-  <img src="docs/screenshot-light.png" width="30%" alt="Light">
-  <img src="docs/screenshot-dark.png" width="30%" alt="Dark">
-  <img src="docs/screenshot-warn.png" width="30%" alt="Not-active warning">
+  <img src="docs/Guardian.png">
 </p>
 
 ## What it does
