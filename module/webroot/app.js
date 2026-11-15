@@ -11,6 +11,7 @@ var CATS = ['ads', 'gambling', 'porn'];
 
 var MOCK = !(window.ksu && typeof window.ksu.exec === 'function');
 var blockedShown = 0;
+var busy = false;
 
 /* ---------------- bridge ---------------- */
 function sh(cmd) {
@@ -41,19 +42,27 @@ function sh(cmd) {
 function mockApi(action) {
   var st;
   try { st = JSON.parse(localStorage.getItem('guardian') || 'null'); } catch (e) { st = null; }
-  if (!st) st = { master: 1, ads: 1, gambling: 1, porn: 1, blocked: 503977, active: true, updated: '2026-10-17' };
-  var p = action.split(/\s+/);
-  if (p[0] === 'set') st[p[1]] = parseInt(p[2], 10);
-  if (p[0] === 'update') st.updated = new Date().toISOString().slice(0, 10);
+  if (!st) st = { master: 1, ads: 1, gambling: 1, porn: 1, blocked: 502831, active: true, updated: '2026-11-15', warn: '' };
+
+  var p = String(action).trim().split(/\s+/);
+  if (p[0] === 'set') {
+    for (var i = 1; i + 1 < p.length; i += 2) st[p[i]] = parseInt(p[i + 1], 10);
+  } else if (p[0] === 'update') {
+    st.updated = new Date().toISOString().slice(0, 10);
+  }
+  st.master = st.master ? 1 : 0;
+  st.ads = st.ads ? 1 : 0;
+  st.gambling = st.gambling ? 1 : 0;
+  st.porn = st.porn ? 1 : 0;
   st.active = st.master === 1;
-  st.warn = st.warn || '';
-  st.blocked = st.master === 1 ? 503977 : 0;
+  st.blocked = st.master === 1 ? 502831 : 0;
+  st.warn = '';
   localStorage.setItem('guardian', JSON.stringify(st));
   return st;
 }
 
 function api(action) {
-  if (MOCK) return new Promise(function (r) { setTimeout(function () { r(mockApi(action)); }, 220); });
+  if (MOCK) return new Promise(function (r) { setTimeout(function () { r(mockApi(action)); }, 200); });
   return sh('sh ' + MOD + '/scripts/webui.sh ' + action).then(function (out) {
     var lines = (out || '').trim().split('\n').filter(Boolean);
     try { return JSON.parse(lines[lines.length - 1] || ''); } catch (e) { return null; }
@@ -61,22 +70,28 @@ function api(action) {
 }
 
 /* ---------------- rendering ---------------- */
-function setSwitch(key, val) {
-  var el = document.getElementById('sw-' + key);
-  if (el) el.setAttribute('aria-checked', val ? 'true' : 'false');
+function blockEl(key) { return document.querySelector('.block[data-key="' + key + '"]'); }
+
+function setBlock(key, on) {
+  var el = blockEl(key);
+  if (el) el.classList.toggle('selected', !!on);
 }
 
-function countUp(target) {
-  var el = document.getElementById('blockedCount');
+function countUp(el, target, suffix) {
   var from = blockedShown, to = Number(target) || 0;
-  var start = null, dur = 650;
-  if (from === to) { el.textContent = to.toLocaleString(); return; }
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || from === to) {
+    blockedShown = to;
+    el.textContent = to.toLocaleString() + suffix;
+    return;
+  }
+  var start = null, dur = 600;
   function step(ts) {
     if (start === null) start = ts;
     var p = Math.min(1, (ts - start) / dur);
     var eased = 1 - Math.pow(1 - p, 3);
     var v = Math.round(from + (to - from) * eased);
-    el.textContent = v.toLocaleString();
+    el.textContent = v.toLocaleString() + suffix;
     if (p < 1) requestAnimationFrame(step); else blockedShown = to;
   }
   requestAnimationFrame(step);
@@ -84,28 +99,37 @@ function countUp(target) {
 
 function render(st) {
   var warnBox = document.getElementById('warnBox');
+
   if (!st) {
-    document.getElementById('stateText').textContent = 'Module not reachable';
-    document.getElementById('stateDot').className = 'dot off';
+    document.getElementById('protTitle').textContent = 'Module not reachable';
+    document.getElementById('protSub').textContent = 'Open the module in your root manager';
     warnBox.classList.remove('show');
     return;
   }
-  setSwitch('master', st.master);
-  CATS.forEach(function (k) { setSwitch(k, st[k]); });
 
   var paused = st.master !== 1;
-  var broken = !paused && st.active === false;
+
+  // protection card
+  document.getElementById('sw-master').setAttribute('aria-checked', paused ? 'false' : 'true');
   document.body.classList.toggle('paused', paused);
-  document.querySelector('.hero').classList.toggle('off', paused);
+  document.getElementById('protTitle').textContent = paused ? 'Protection is off' : 'Protection is on';
 
-  var dot = document.getElementById('stateDot');
-  dot.className = 'dot ' + (paused || broken ? 'off' : 'on');
+  var sub = document.getElementById('protSub');
+  if (paused) {
+    blockedShown = 0;
+    sub.textContent = 'Blocking is paused';
+  } else {
+    countUp(sub, st.blocked, ' domains blocked');
+  }
 
-  var text = 'Protection is on';
-  if (paused) text = 'Protection is off';
-  else if (broken) text = 'Not blocking';
-  document.getElementById('stateText').textContent = text;
+  // selection
+  setBlock('ads', st.ads === 1);
+  setBlock('gambling', st.gambling === 1);
+  setBlock('porn', st.porn === 1);
+  setBlock('all', st.ads === 1 && st.gambling === 1 && st.porn === 1);
 
+  // warning (only when blocking should be on but is not)
+  var broken = !paused && st.active === false;
   if (broken && st.warn) {
     document.getElementById('warnText').textContent = st.warn;
     warnBox.classList.add('show');
@@ -113,10 +137,9 @@ function render(st) {
     warnBox.classList.remove('show');
   }
 
-  countUp(st.blocked);
-
-  var info = document.getElementById('updatedInfo');
-  info.textContent = st.updated && st.updated !== '-' ? 'lists · ' + st.updated : '';
+  // bottom bar
+  document.getElementById('listsInfo').textContent =
+    st.updated && st.updated !== '-' ? 'Lists · ' + st.updated : 'Lists · —';
 }
 
 /* ---------------- snackbar ---------------- */
@@ -129,68 +152,97 @@ function toast(msg) {
   toastTimer = setTimeout(function () { s.classList.remove('show'); }, 2600);
 }
 
-/* ---------------- progress ---------------- */
-var busy = 0;
-function progress(on) {
-  busy += on ? 1 : -1;
-  if (busy < 0) busy = 0;
-  document.getElementById('progress').classList.toggle('on', busy > 0);
-}
-
 /* ---------------- actions ---------------- */
-function onToggle(key, el) {
-  if (el.classList.contains('busy')) return;
+function onMaster() {
+  if (busy) return;
+  var el = document.getElementById('sw-master');
   var next = el.getAttribute('aria-checked') === 'true' ? 0 : 1;
   el.setAttribute('aria-checked', next ? 'true' : 'false'); // optimistic
-  el.classList.add('busy');
-  progress(true);
+  busy = true;
 
-  api('set ' + key + ' ' + next).then(function (st) {
-    el.classList.remove('busy');
-    progress(false);
-    if (st) {
-      render(st);
-    } else {
-      el.setAttribute('aria-checked', next ? 'false' : 'true'); // revert
-      toast("Couldn't update — is the module installed?");
-    }
+  api('set master ' + next).then(function (st) {
+    busy = false;
+    if (st) render(st);
+    else el.setAttribute('aria-checked', next ? 'false' : 'true');
   });
 }
 
-function onUpdate(btn) {
-  if (btn.disabled) return;
-  btn.disabled = true;
-  progress(true);
+function onBlock(key) {
+  if (busy || document.body.classList.contains('paused')) return;
+
+  var cmd;
+  if (key === 'all') {
+    // "Block all" is derived: on only when all three are on.
+    var v = blockEl('all').classList.contains('selected') ? 0 : 1;
+    cmd = 'set ads ' + v + ' gambling ' + v + ' porn ' + v;
+    setBlock('ads', v); setBlock('gambling', v); setBlock('porn', v); setBlock('all', v);
+  } else {
+    var next = blockEl(key).classList.contains('selected') ? 0 : 1;
+    cmd = 'set ' + key + ' ' + next;
+    setBlock(key, next);
+    setBlock('all',
+      blockEl('ads').classList.contains('selected') &&
+      blockEl('gambling').classList.contains('selected') &&
+      blockEl('porn').classList.contains('selected'));
+  }
+
+  busy = true;
+  api(cmd).then(function (st) {
+    busy = false;
+    if (st) render(st);
+  });
+}
+
+function runUpdate() {
+  var b1 = document.getElementById('btnUpdate');
+  var b2 = document.getElementById('btnRefresh');
+  if (b1.disabled) return;
+
+  b1.disabled = true;
+  b2.disabled = true;
+  var label = document.getElementById('updateLabel');
+  var old = label.textContent;
+  label.textContent = 'Updating…';
   toast('Updating blocklists…');
+
   api('update').then(function (st) {
-    btn.disabled = false;
-    progress(false);
+    b1.disabled = false;
+    b2.disabled = false;
+    label.textContent = old;
     if (st) { render(st); toast('Blocklists updated'); }
     else { toast('Update failed — check your connection'); }
   });
 }
 
+/* ---------------- about sheet ---------------- */
+function openSheet() {
+  document.getElementById('scrim').classList.add('show');
+  document.getElementById('sheet').classList.add('show');
+}
+function closeSheet() {
+  document.getElementById('scrim').classList.remove('show');
+  document.getElementById('sheet').classList.remove('show');
+}
+
 /* ---------------- boot ---------------- */
 function boot() {
-  // dark mode hint from the host, if available
   try {
     if (typeof webui !== 'undefined' && typeof webui.isDarkMode === 'boolean') {
       document.documentElement.classList.toggle('host-dark', webui.isDarkMode);
     }
   } catch (e) {}
 
-  // staggered entrance
-  var reveal = document.querySelectorAll('.reveal');
-  Array.prototype.forEach.call(reveal, function (el, i) { el.style.setProperty('--i', i); });
-  requestAnimationFrame(function () {
-    Array.prototype.forEach.call(reveal, function (el) { el.classList.add('in'); });
+  document.getElementById('sw-master').addEventListener('click', onMaster);
+
+  Array.prototype.forEach.call(document.querySelectorAll('.block'), function (el) {
+    el.addEventListener('click', function () { onBlock(this.getAttribute('data-key')); });
   });
 
-  document.getElementById('sw-master').addEventListener('click', function () { onToggle('master', this); });
-  CATS.forEach(function (k) {
-    document.getElementById('sw-' + k).addEventListener('click', function () { onToggle(k, this); });
-  });
-  document.getElementById('btnUpdate').addEventListener('click', function () { onUpdate(this); });
+  document.getElementById('btnUpdate').addEventListener('click', runUpdate);
+  document.getElementById('btnRefresh').addEventListener('click', runUpdate);
+  document.getElementById('btnInfo').addEventListener('click', openSheet);
+  document.getElementById('sheetClose').addEventListener('click', closeSheet);
+  document.getElementById('scrim').addEventListener('click', closeSheet);
 
   api('status').then(render);
 }

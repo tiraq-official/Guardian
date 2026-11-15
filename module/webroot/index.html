@@ -11,130 +11,131 @@
 </head>
 <body>
 
-<div class="progress" id="progress" aria-hidden="true"><span class="bar"></span></div>
+<main class="app" id="app">
 
-<main class="scaffold" id="scaffold">
-
-  <header class="hero reveal">
-    <div class="hero-logo" id="heroLogo">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 2 4 5.2v5.4c0 4.8 3.4 9.2 8 10.4 4.6-1.2 8-5.6 8-10.4V5.2L12 2z"/>
-        <path class="tick" d="M8.6 11.7l2.3 2.3 4.5-4.7" fill="none"/>
-      </svg>
-    </div>
-    <div class="hero-text">
-      <h1>Guardian</h1>
-      <p>Ad&nbsp;·&nbsp;Gambling&nbsp;·&nbsp;Adult blocker</p>
+  <header class="topbar">
+    <span class="brand" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.6c0 4.4 3 8.3 7 9.4 4-1.1 7-5 7-9.4V6l-7-3z"/></svg>
+    </span>
+    <div class="top-actions">
+      <button class="iconbtn" id="btnInfo" aria-label="About Guardian">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2M12 7.7v.01"/></svg>
+      </button>
+      <button class="iconbtn" id="btnRefresh" aria-label="Update blocklists">
+        <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.2h-4.2"/></svg>
+      </button>
     </div>
   </header>
 
-  <div class="stats reveal">
-    <span class="dot" id="stateDot"></span>
-    <span id="stateText">Checking…</span>
-    <span class="sep">·</span>
-    <span><b id="blockedCount">0</b> domains</span>
+  <div class="titles">
+    <h1>Guardian</h1>
+    <p>System-wide content &amp; privacy blocker</p>
   </div>
 
   <div class="warn" id="warnBox">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3L12 3z"/><path d="M12 10.5v3.4M12 16.7v.01" fill="none"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3L12 3z"/><path d="M12 10.5v3.4M12 16.7v.01"/></svg>
     <span id="warnText"></span>
   </div>
 
-  <!-- master -->
-  <section class="card master reveal" id="masterCard">
-    <div class="card-lead">
-      <div class="lead-icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5.2v5.4c0 4.8 3.4 9.2 8 10.4 4.6-1.2 8-5.6 8-10.4V5.2L12 2z"/></svg>
-      </div>
-      <div class="lead-text">
-        <h2>Master switch</h2>
-        <p>Turn all blocking on or off in one tap.</p>
-      </div>
+  <section class="protection" id="protectionCard">
+    <div class="prot-main">
+      <span class="prot-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2.6 4.6 5.7v5.7c0 4.6 3.1 8.7 7.4 9.9 4.3-1.2 7.4-5.3 7.4-9.9V5.7L12 2.6z"/></svg>
+      </span>
+      <h2 id="protTitle">Protection is on</h2>
+      <p id="protSub">0 domains blocked</p>
     </div>
-    <button class="mdswitch" id="sw-master" role="switch" aria-checked="true" aria-label="Master switch">
+    <button class="mdswitch" id="sw-master" role="switch" aria-checked="true" aria-label="Protection">
       <span class="track"><span class="thumb">
-        <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
-        <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
+        <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.6l4 4 8-9"/></svg>
       </span></span>
     </button>
   </section>
 
-  <h3 class="section-title reveal">What to block</h3>
+  <div class="section-head">
+    <span class="section-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 3 3 7.6l9 4.6 9-4.6L12 3z"/><path d="M3 12.2l9 4.6 9-4.6"/><path d="M3 16.6l9 4.6 9-4.6"/></svg>
+    </span>
+    <h2>What to block</h2>
+  </div>
 
-  <section class="categories" id="categories">
+  <section class="blocks" id="blocks">
 
-    <section class="card cat reveal" data-key="ads">
-      <div class="card-lead">
-        <div class="lead-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M3 19h18" fill="none"/><path d="M7 9h6M7 12h4" fill="none"/></svg>
-        </div>
-        <div class="lead-text">
-          <h2>Ads &amp; trackers</h2>
-          <p>Blocks advertising, tracking and known malware domains in every app.</p>
-        </div>
-      </div>
-      <button class="mdswitch" id="sw-ads" role="switch" aria-checked="true" aria-label="Block ads">
-        <span class="track"><span class="thumb">
-          <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
-          <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
-        </span></span>
-      </button>
-    </section>
-
-    <section class="card cat reveal" data-key="gambling">
-      <div class="card-lead">
-        <div class="lead-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" fill="none"/><circle cx="9.5" cy="10.5" r="1.1"/><circle cx="14.5" cy="13.5" r="1.1"/><circle cx="12" cy="12" r="1.1"/></svg>
-        </div>
-        <div class="lead-text">
-          <h2>Gambling</h2>
-          <p>Blocks betting, casino, lottery and gaming-bonus sites system-wide.</p>
-        </div>
-      </div>
-      <button class="mdswitch" id="sw-gambling" role="switch" aria-checked="true" aria-label="Block gambling">
-        <span class="track"><span class="thumb">
-          <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
-          <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
-        </span></span>
-      </button>
-    </section>
-
-    <section class="card cat reveal" data-key="porn">
-      <div class="card-lead">
-        <div class="lead-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none"/><path d="M6 18L18 6" fill="none"/></svg>
-        </div>
-        <div class="lead-text">
-          <h2>Adult / NSFW</h2>
-          <p>Blocks adult content across the whole system, in apps and browsers.</p>
-        </div>
-      </div>
-      <button class="mdswitch" id="sw-porn" role="switch" aria-checked="true" aria-label="Block adult content">
-        <span class="track"><span class="thumb">
-          <svg class="i-on" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none"/></svg>
-          <svg class="i-off" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none"/></svg>
-        </span></span>
-      </button>
-    </section>
-
-  </section>
-
-  <section class="tools reveal">
-    <button class="textbtn" id="btnUpdate">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6" fill="none"/><path d="M20 4v4h-4" fill="none"/></svg>
-      Update blocklists
+    <button class="block block-all" data-key="all">
+      <span class="block-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="10.5" rx="1.6"/><path d="M2 18.5h20"/></svg>
+      </span>
+      <span class="block-body">
+        <span class="block-title">Block all</span>
+        <span class="block-desc">Blocks ads, tracking and known malware domains in every app.</span>
+      </span>
+      <span class="check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
     </button>
-    <span class="tools-info" id="updatedInfo"></span>
+
+    <div class="block-grid">
+
+      <button class="block" data-key="gambling">
+        <span class="block-top">
+          <span class="block-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="5"/><path d="M7 10v4M5 12h4M16.5 11h.01M18.5 13h.01"/></svg>
+          </span>
+          <span class="check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+        </span>
+        <span class="block-title">Gaming</span>
+        <span class="block-desc">Blocks betting, casino and lottery sites.</span>
+      </button>
+
+      <button class="block" data-key="ads">
+        <span class="block-top">
+          <span class="block-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="10.5" rx="1.6"/><path d="M2 18.5h20"/></svg>
+          </span>
+          <span class="check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+        </span>
+        <span class="block-title">Ads &amp; trackers</span>
+        <span class="block-desc">Blocks ads, tracking and malware.</span>
+      </button>
+
+      <button class="block" data-key="porn">
+        <span class="block-top">
+          <span class="block-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M6.1 17.9 17.9 6.1"/></svg>
+          </span>
+          <span class="check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+        </span>
+        <span class="block-title">Adult / NSFW</span>
+        <span class="block-desc">Blocks adult content across the whole system.</span>
+      </button>
+
+    </div>
   </section>
 
-  <footer class="foot reveal">
-    <span>Maintained by</span>
-    <b>Saptak</b>
-  </footer>
+  <div class="bottombar">
+    <button class="update" id="btnUpdate">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.2h-4.2"/></svg>
+      <span id="updateLabel">Update blocklists</span>
+    </button>
+    <span class="vdiv" aria-hidden="true"></span>
+    <span class="lists" id="listsInfo">Lists &middot; &mdash;</span>
+  </div>
+
+  <footer class="foot">Maintained by <b>Saptak</b></footer>
 
 </main>
 
 <div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <h2 id="sheetTitle">Guardian</h2>
+  <p class="sheet-sub">System-wide content &amp; privacy blocker for rooted Android.</p>
+  <div class="sheet-body">
+    <p>Blocks ads, trackers, malware, gambling and adult domains by replacing the system <code>hosts</code> file. Works on Magisk, KernelSU / KernelSU-Next, APatch, FolkPatch and SukiSU.</p>
+    <p>If one site still loads, turn off your browser&rsquo;s own secure DNS (Chrome &rarr; Settings &rarr; Privacy and security &rarr; Use secure DNS &rarr; Off).</p>
+  </div>
+  <button class="sheet-close" id="sheetClose">Close</button>
+</div>
 
 <script src="app.js"></script>
 </body>

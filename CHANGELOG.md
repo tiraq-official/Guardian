@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.0
+
+Redesigned WebUI.
+
+- New layout: a large **Protection** card with a switch, a **What to block**
+  section with a **Block all** card, and a grid of **Gaming**, **Ads &
+  trackers** and **Adult / NSFW** cards.
+- **Block all** is derived — it fills in when all three are on and clears the
+  moment one is off. Tapping it sets or clears all three at once.
+- While protection is off, the block cards render as disabled settings.
+- Selected cards fill with the system accent; everything stays Material You
+  and light/dark aware.
+- Backend: `set` now accepts multiple `key value` pairs, so "Block all"
+  rebuilds and remounts the hosts file only once.
+
 ## v1.0
 
 First release.

@@ -15,12 +15,15 @@ case "$1" in
         status_json
         ;;
     set)
-        if set_conf "$2" "$3"; then
-            status_json
-        else
+        # one or more "key value" pairs, e.g. `set ads 1 gambling 1 porn 1`
+        shift
+        set_many "$@"
+        rc=$?
+        if [ "$rc" -eq 2 ]; then
             printf '{"ok":false,"error":"bad argument"}\n'
             exit 1
         fi
+        status_json
         ;;
     rebuild)
         ensure_data

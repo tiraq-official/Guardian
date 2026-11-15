@@ -244,17 +244,36 @@ flush_dns() {
 # ---------------------------------------------------------------------------
 #  Set one toggle, rebuild + remount
 # ---------------------------------------------------------------------------
-set_conf() {
-    key="$1"; val="$2"
-    case "$key" in master|ads|gambling|porn) ;; *) return 1;; esac
-    case "$val" in 0|1) ;; *) return 1;; esac
+# Set one or more toggles at once, then rebuild + remount exactly once.
+#   set_many ads 1 gambling 1 porn 1
+#   set_many master 0
+set_many() {
+    [ $# -ge 2 ] || return 2
 
     ensure_data
     load_conf
-    eval "$key=\$val"
+
+    n=0
+    while [ $# -ge 2 ]; do
+        key="$1"; val="$2"; shift 2
+        case "$key" in master|ads|gambling|porn) ;; *) return 2;; esac
+        case "$val" in 0|1) ;; *) return 2;; esac
+        eval "$key=\$val"
+        n=$((n + 1))
+    done
+    [ "$n" -gt 0 ] || return 2
+
     save_conf
     build_hosts
-    mount_hosts
+    # a failed mount must not look like a bad argument - it shows up as
+    # "not active" in status_json instead
+    mount_hosts || log "set_many: mount failed after applying $*"
+    return 0
+}
+
+# single-toggle convenience wrapper (used by action.sh)
+set_conf() {
+    set_many "$1" "$2"
 }
 
 list_updated() {

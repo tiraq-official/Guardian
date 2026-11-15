@@ -11,8 +11,9 @@ Material 3 Expressive WebUI.
 
 - Blocks ads, trackers, malware, gambling and adult domains **everywhere** —
   every app and browser — by swapping your system `hosts` file.
-- **Master switch** plus independent **Ads**, **Gambling** and **Adult**
-  toggles, each with its own list.
+- **Protection** switch plus a **Block all** card and independent **Ads**,
+  **Gambling** and **Adult** cards. Block all fills in automatically when all
+  three are on, and clears the moment one is turned off.
 - WebUI follows your system accent (Material You) and light/dark theme.
 - ~500,000 domains bundled, so it works offline right after flashing.
 - Toggles apply instantly; one-tap blocklist update.
@@ -21,7 +22,7 @@ Works on **Magisk, KernelSU / KernelSU-Next, APatch, FolkPatch, SukiSU**.
 
 ## Install
 
-1. Download `Guardian-v1.0.zip`.
+1. Download `Guardian-v2.0.zip`.
 2. Root manager → Modules → Install from storage → pick the zip.
 3. Reboot, then open the module's WebUI and set your toggles.
 
