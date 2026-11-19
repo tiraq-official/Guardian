@@ -22,8 +22,10 @@ SOURCES="
 ads|$HAGEZI/pro.plus-onlydomains.txt|domains
 ads|https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts|hosts
 ads|https://raw.githubusercontent.com/AdguardTeam/AdGuardSDNSFilter/master/Filters/rules.txt|adblock
-gambling|$HAGEZI/gambling.mini-onlydomains.txt|domains
+gambling|$HAGEZI/gambling.medium-onlydomains.txt|domains
 porn|$HAGEZI/nsfw-onlydomains.txt|domains
+porn|https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts|hosts
+porn|https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Adult|domains
 "
 
 VALID='^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$'

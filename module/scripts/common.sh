@@ -256,8 +256,11 @@ set_many() {
     n=0
     while [ $# -ge 2 ]; do
         key="$1"; val="$2"; shift 2
-        case "$key" in master|ads|gambling|porn) ;; *) return 2;; esac
-        case "$val" in 0|1) ;; *) return 2;; esac
+        case "$key" in
+            master|ads|gambling|porn)
+                case "$val" in 0|1) ;; *) return 2;; esac ;;
+            *) return 2 ;;
+        esac
         eval "$key=\$val"
         n=$((n + 1))
     done
@@ -297,8 +300,8 @@ status_json() {
     live=$(live_blocked)
     case "$live" in ''|*[!0-9]*) live=0;; esac
 
-    # "active" means the resolver can actually see blocked entries:
-    # the file must be mounted (live entries) AND readable by netd (label).
+    # "active" means the resolver can actually see blocked entries: the file
+    # must be mounted (live entries) AND readable by netd (label).
     active=false
     warn=""
     if [ "$master" = "1" ]; then
@@ -313,4 +316,33 @@ status_json() {
 
     printf '{"master":%s,"ads":%s,"gambling":%s,"porn":%s,"blocked":%s,"live":%s,"active":%s,"mounted":%s,"context":"%s","warn":"%s","updated":"%s"}\n' \
         "$master" "$ads" "$gambling" "$porn" "$blocked" "$live" "$active" "$mounted" "$ctx" "$warn" "$(list_updated)"
+}
+
+# ---------------------------------------------------------------------------
+#  Clean up anything left behind by the old DNS-resolver engine (v3.x).
+#  Upgrading users may still have iptables redirects pointing at a resolver
+#  that no longer exists - that would kill DNS, so always remove them.
+# ---------------------------------------------------------------------------
+cleanup_resolver() {
+    if pidof smartdns >/dev/null 2>&1; then
+        pidof smartdns | xargs -r kill 2>/dev/null
+    fi
+    for t in iptables ip6tables; do
+        command -v $t >/dev/null 2>&1 || continue
+        for proto in udp tcp; do
+            for p in 5354 53; do
+                i=0
+                while [ $i -lt 3 ]; do
+                    $t -t nat -D OUTPUT -p $proto --dport 53 -j REDIRECT --to-ports $p 2>/dev/null || break
+                    i=$((i + 1))
+                done
+                i=0
+                while [ $i -lt 3 ]; do
+                    $t -t nat -D OUTPUT -p $proto --dport 53 -m owner ! --uid-owner 0 -j REDIRECT --to-ports $p 2>/dev/null || break
+                    i=$((i + 1))
+                done
+            done
+        done
+    done
+    log "cleanup: removed any legacy resolver redirect"
 }

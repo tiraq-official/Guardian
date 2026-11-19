@@ -43,10 +43,12 @@ SOURCES = {
         ("adguard-sdns", "https://raw.githubusercontent.com/AdguardTeam/AdGuardSDNSFilter/master/Filters/rules.txt", "adblock"),
     ],
     "gambling": [
-        ("hagezi-gambling", f"{HAGEZI}/gambling.mini-onlydomains.txt", "domains"),
+        ("hagezi-gambling", f"{HAGEZI}/gambling.medium-onlydomains.txt", "domains"),
     ],
     "porn": [
         ("hagezi-nsfw", f"{HAGEZI}/nsfw-onlydomains.txt", "domains"),
+        ("sinfonietta", "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts", "hosts"),
+        ("shadowwhisperer", "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Adult", "domains"),
     ],
 }
 

@@ -7,6 +7,9 @@ MODDIR=${0%/*}
 
 ensure_data
 
+# drop any redirect left over from the v3.x resolver engine
+cleanup_resolver
+
 if needs_build; then
     build_hosts
 fi

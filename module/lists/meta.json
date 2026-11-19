@@ -1,8 +1,8 @@
 {
-  "generated": "2026-10-17T17:18:26Z",
+  "generated": "2026-11-15T07:44:32Z",
   "categories": {
     "ads": {
-      "count": 277960,
+      "count": 311373,
       "sources": [
         "hagezi-pro.plus",
         "stevenblack",
@@ -10,15 +10,17 @@
       ]
     },
     "gambling": {
-      "count": 133655,
+      "count": 93763,
       "sources": [
         "hagezi-gambling"
       ]
     },
     "porn": {
-      "count": 92362,
+      "count": 314569,
       "sources": [
-        "hagezi-nsfw"
+        "hagezi-nsfw",
+        "sinfonietta",
+        "shadowwhisperer"
       ]
     }
   }

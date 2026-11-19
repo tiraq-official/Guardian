@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.0
+
+Blocklists refreshed and adult blocking strengthened.
+
+- All lists rebuilt from upstream.
+- **Adult / NSFW** now combines HaGeZi NSFW, Sinfonietta and ShadowWhisperer —
+  about **315,000** domains, up from ~92,000.
+- **Gambling** moved to HaGeZi's `medium` list (~94k), since their `mini` list
+  was cut down upstream.
+- **Ads & trackers** grew to ~311,000 with the upstream refresh.
+- Bundled total is now ~717,000 unique domains.
+- The same sources are wired into the in-app **Update blocklists** button, so
+  updating on device matches the shipped build.
+- `scripts/diagnose.sh` now reports the live entry count, the mount table
+  entry and any leftover DNS redirects, so problems are easier to spot.
+
 ## v2.0
 
 Redesigned WebUI.

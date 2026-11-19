@@ -24,6 +24,7 @@ echo
 
 echo "live check - what the DNS resolver actually reads:"
 live=$(live_blocked)
+case "$live" in ''|*[!0-9]*) live=0;; esac
 echo "  $tgt currently holds $live blocked entries"
 if [ "$master" = "0" ]; then
     echo "  => master switch is OFF, nothing should be blocked"
@@ -34,14 +35,24 @@ else
 fi
 echo
 
-echo "mount table entry:"
-grep " $tgt " /proc/self/mountinfo 2>/dev/null | head -2
+echo "leftover resolver redirects (should be none):"
+n=0
+for t in iptables ip6tables; do
+    command -v $t >/dev/null 2>&1 || continue
+    c=$($t -t nat -S OUTPUT 2>/dev/null | grep -c 'dport 53')
+    if [ "$c" -gt 0 ]; then
+        echo "  $t: $c rule(s)"
+        n=$((n + c))
+    fi
+done
+[ "$n" -eq 0 ] && echo "  none"
 echo
 
+echo "mount table entry:"
+grep " $tgt " /proc/self/mountinfo 2>/dev/null | head -1
+echo
 echo "recent netd denials (should be empty):"
 dmesg 2>/dev/null | grep -i 'name="hosts"' | tail -3
-logcat -d 2>/dev/null | grep -i 'name="hosts"' | tail -3
 echo
-
 echo "log tail:"
 tail -12 "$LOG" 2>/dev/null

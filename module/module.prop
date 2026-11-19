@@ -1,7 +1,7 @@
 id=saptak_guardian
 name=Guardian — Ad · Gambling · Adult Blocker
-version=v2.0
-versionCode=20000
+version=v3.0
+versionCode=30000
 author=Saptak Maji
 description=System-wide DNS blocker for ads, gambling and adult sites, with a Material 3 Expressive WebUI.
 updateJson=https://raw.githubusercontent.com/tiraq-official/Guardian/main/update.json
